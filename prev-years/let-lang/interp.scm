@@ -12,6 +12,7 @@
 
   (provide value-of-program value-of)
 
+
 ;;;;;;;;;;;;;;;; the interpreter ;;;;;;;;;;;;;;;;
 
   ;; value-of-program : Program -> ExpVal
@@ -64,12 +65,9 @@
             (value-of body
               (extend-env var val1 env))))
 
-        
-        (do-exp (ids inits steps bools results)
-          (let 
-
-
-
+        (letsum-exp (id exps1 exps2)
+            (let ((val (value-of (car exps1) env)))
+              ((car exps2) val))
         )))
 
 
