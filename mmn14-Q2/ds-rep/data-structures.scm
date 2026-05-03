@@ -10,13 +10,22 @@
 
 ;;; an expressed value is either a number, a boolean or a procval.
 
+  (define-datatype type type?
+    (num-type)
+    (bool-type)
+    (proc-type))
+
   (define-datatype expval expval?
     (num-val
       (value number?))
     (bool-val
       (boolean boolean?))
     (proc-val 
-      (proc proc?)))
+      (proc proc?))
+    (exp-type
+      (type type?)))
+
+
 
 ;;; extractors:
 
@@ -53,7 +62,8 @@
   (define-datatype proc proc?
     (procedure
       (var symbol?)
-      (body expression?)))
+      (body expression?)
+      (env environment?)))
 
 ;;;;;;;;;;;;;;;; environment structures ;;;;;;;;;;;;;;;;
 

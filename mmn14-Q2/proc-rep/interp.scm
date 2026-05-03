@@ -1,6 +1,6 @@
 (module interp (lib "eopl.ss" "eopl")
   
-  ;; interpreter for the PROC language, using the data structure
+  ;; interpreter for the PROC language, using the procedural
   ;; representation of procedures.
 
   ;; The \commentboxes are the latex code for inserting the rules into
@@ -66,21 +66,27 @@
               (extend-env var val1 env))))
         
         (proc-exp (var body)
-          (proc-val (procedure var body)))
+          (proc-val (procedure var body env)))
 
         (call-exp (rator rand)
           (let ((proc (expval->proc (value-of rator env)))
                 (arg (value-of rand env)))
-            (apply-procedure proc arg env)))
+            (apply-procedure proc arg)))
 
         )))
 
+
+  ;; procedure : Var * Exp * Env -> Proc
+  ;; Page: 79
+  (define procedure
+    (lambda (var body env)
+      (lambda (val)
+        (value-of body (extend-env var val env)))))
+  
   ;; apply-procedure : Proc * ExpVal -> ExpVal
   ;; Page: 79
   (define apply-procedure
-    (lambda (proc1 val env)
-      (cases proc proc1
-        (procedure (var body)
-          (value-of body (extend-env var val env))))))
+    (lambda (proc val)
+      (proc val)))
 
   )

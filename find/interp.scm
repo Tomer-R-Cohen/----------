@@ -1,11 +1,8 @@
 (module interp (lib "eopl.ss" "eopl")
   
-  ;; interpreter for the PROC language, using the data structure
-  ;; representation of procedures.
-
-  ;; The \commentboxes are the latex code for inserting the rules into
-  ;; the code in the book. These are too complicated to put here, see
-  ;; the text, sorry. 
+  ;; interpreter for the LET language.  The \commentboxes are the
+  ;; latex code for inserting the rules into the code in the book.
+  ;; These are too complicated to put here, see the text, sorry.
 
   (require "drscheme-init.scm")
 
@@ -18,6 +15,7 @@
 ;;;;;;;;;;;;;;;; the interpreter ;;;;;;;;;;;;;;;;
 
   ;; value-of-program : Program -> ExpVal
+  ;; Page: 71
   (define value-of-program 
     (lambda (pgm)
       (cases program pgm
@@ -25,6 +23,7 @@
           (value-of exp1 (init-env))))))
 
   ;; value-of : Exp * Env -> ExpVal
+  ;; Page: 71
   (define value-of
     (lambda (exp env)
       (cases expression exp
@@ -64,23 +63,21 @@
           (let ((val1 (value-of exp1 env)))
             (value-of body
               (extend-env var val1 env))))
-        
-        (proc-exp (var body)
-          (proc-val (procedure var body)))
 
-        (call-exp (rator rand)
-          (let ((proc (expval->proc (value-of rator env)))
-                (arg (value-of rand env)))
-            (apply-procedure proc arg env)))
+        (find-exp (val exps)
+          (let ((val1 (expval->num (value-of val env))))
+            (if (null? exps)
+              (num-val -1)
+              (if (not (= val1 (expval->num (value-of (car exps) env))))
+                (let ((result (expval->num (value-of (find-exp val (cdr exps)) env))))
+                  (if (= result -1)
+                    (num-val -1)
+                    (num-val (+ 1 result))))
+                (num-val 1)
+                ))))
 
         )))
 
-  ;; apply-procedure : Proc * ExpVal -> ExpVal
-  ;; Page: 79
-  (define apply-procedure
-    (lambda (proc1 val env)
-      (cases proc proc1
-        (procedure (var body)
-          (value-of body (extend-env var val env))))))
 
   )
+

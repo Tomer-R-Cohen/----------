@@ -1,8 +1,6 @@
 (module data-structures (lib "eopl.ss" "eopl")
 
-  ;; data structures for proc-lang/ds-rep
-
-  (require "lang.scm")                  ; for expression?
+  ;; data structures for let-lang.
 
   (provide (all-defined-out))                ; too many things to list
 
@@ -14,13 +12,12 @@
     (num-val
       (value number?))
     (bool-val
-      (boolean boolean?))
-    (proc-val 
-      (proc proc?)))
+      (boolean boolean?)))
 
 ;;; extractors:
 
   ;; expval->num : ExpVal -> Int
+  ;; Page: 70
   (define expval->num
     (lambda (v)
       (cases expval v
@@ -28,32 +25,17 @@
 	(else (expval-extractor-error 'num v)))))
 
   ;; expval->bool : ExpVal -> Bool
+  ;; Page: 70
   (define expval->bool
     (lambda (v)
       (cases expval v
 	(bool-val (bool) bool)
 	(else (expval-extractor-error 'bool v)))))
 
-  ;; expval->proc : ExpVal -> Proc
-  (define expval->proc
-    (lambda (v)
-      (cases expval v
-	(proc-val (proc) proc)
-	(else (expval-extractor-error 'proc v)))))
-
   (define expval-extractor-error
     (lambda (variant value)
       (eopl:error 'expval-extractors "Looking for a ~s, found ~s"
 	variant value)))
-
-;;;;;;;;;;;;;;;; procedures ;;;;;;;;;;;;;;;;
-
-  ;; proc? : SchemeVal -> Bool
-  ;; procedure : Var * Exp * Env -> Proc
-  (define-datatype proc proc?
-    (procedure
-      (var symbol?)
-      (body expression?)))
 
 ;;;;;;;;;;;;;;;; environment structures ;;;;;;;;;;;;;;;;
 
